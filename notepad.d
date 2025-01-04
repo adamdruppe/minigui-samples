@@ -4,7 +4,7 @@ import arsd.png;
 void main() {
 	auto window = new MainWindow("MG Notepad");
 
-	window.icon = readPngFromBytes(import("notepad-icon.png"));
+	window.icon = readPngFromBytes(import("icons/notepad.png"));
 
 	// we can add widgets before or after setting the menu, either way is fine.
 	// i'll do it before here so the local variables are available to the commands.
