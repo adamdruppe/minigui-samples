@@ -235,8 +235,6 @@ void main() {
 		}
 	});
 
-	string currentFileName;
-
 	struct Commands {
 		@menu("File") {
 			void New() @accelerator("Ctrl+N") {
@@ -257,28 +255,25 @@ void main() {
 					colors[] = img.data[];
 					palette = img.palette.dup;
 
-					currentFileName = name;
+					previousFileReferenced = name;
 					window.redraw();
 				});
 			}
 			//@toolbar("") @icon(GenericIcons.Save)
 			void Save() @accelerator("Ctrl+S") {
-				if(currentFileName.length == 0)
-					Save_As();
+				if(previousFileReferenced.length)
+					Save_As(previousFileReferenced);
 				else {
-					auto img = new IndexedImage(imageWidth, imageHeight);
-					img.data[] = colors[];
-					img.palette = palette.dup;
-					img.hasAlpha = true;
-					import arsd.png;
-					writePng(currentFileName, img);
+					this.callAsIfClickedFromMenu!Save_As(window);
 				}
 			}
-			void Save_As() {
-				window.getSaveFileName((string name) {
-					currentFileName = name;
-					Save();
-				});
+			void Save_As(FileName!(previousFileReferenced, ["PNG Files\0*.png"]) name) {
+				auto img = new IndexedImage(imageWidth, imageHeight);
+				img.data[] = colors[];
+				img.palette = palette.dup;
+				img.hasAlpha = true;
+				import arsd.png;
+				writePng(previousFileReferenced, img);
 			}
 
 			@separator
