@@ -70,6 +70,9 @@ class PaletteWidget : Widget {
 void main() {
 	auto window = new MainWindow("MG Icon Editor");
 
+	import arsd.png;
+	window.icon = readPngFromBytes(import("icons/paint.png"));
+
 	window.statusBar.parts ~= new StatusBar.Part(100);
 	window.statusBar.parts ~= new StatusBar.Part(100);
 
@@ -243,21 +246,18 @@ void main() {
 					window.redraw();
 				});
 			}
-			void Open(string name) @accelerator("Ctrl+O") {
-				window.getOpenFileName((string name) {
-					import arsd.png;
-					auto img = cast(IndexedImage) readPng(name);
-					if(img is null)
-						return;
-					imageWidth = img.width;
-					imageHeight = img.height;
-					colors.length = imageWidth * imageHeight;
-					colors[] = img.data[];
-					palette = img.palette.dup;
+			void Open(FileName!() name) @accelerator("Ctrl+O") {
+				import arsd.png;
+				auto img = cast(IndexedImage) readPng(name);
+				if(img is null)
+					return;
+				imageWidth = img.width;
+				imageHeight = img.height;
+				colors.length = imageWidth * imageHeight;
+				colors[] = img.data[];
+				palette = img.palette.dup;
 
-					previousFileReferenced = name;
-					window.redraw();
-				});
+				window.redraw();
 			}
 			//@toolbar("") @icon(GenericIcons.Save)
 			void Save() @accelerator("Ctrl+S") {
@@ -278,9 +278,7 @@ void main() {
 
 			@separator
 
-			void Quit() @accelerator("Ctrl+W") {
-				Exit();
-			}
+			void Quit() @accelerator("Ctrl+W") { Exit(); } // I like this key shortcut too
 
 			void Exit() @accelerator("Alt+F4") {
 				window.close();
